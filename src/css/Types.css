@@ -1,0 +1,1259 @@
+/* PARTICULAS */
+
+.effect-container {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* BUG */
+.bug-effect-container {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  overflow: hidden;
+  /* Un ligerísimo fondo verde amarillento (muy sutil) */
+  background: radial-gradient(
+    circle at center,
+    transparent 40%,
+    rgba(139, 195, 74, 0.05) 100%
+  );
+}
+
+/* --- ESTILOS DEL SVG DE TELARAÑA --- */
+.spider-web {
+  position: absolute;
+  width: 250px;
+  height: 250px;
+  opacity: 0.6; /* Un poco transparente para no abrumar */
+  /* Un ligero balanceo como si la soplara el viento */
+  animation: swayWeb 8s ease-in-out infinite alternate;
+}
+
+.web-top-left {
+  top: -10px;
+  left: -10px;
+  transform-origin: top left;
+}
+
+.web-bottom-right {
+  bottom: -10px;
+  right: -10px;
+  transform-origin: bottom right;
+}
+
+.web-lines {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.4);
+  stroke-width: 0.5;
+
+  /* Truco para animar el dibujo del SVG */
+  stroke-dasharray: 400;
+  stroke-dashoffset: 400;
+  animation: weaveWeb 1.5s ease-out forwards;
+}
+
+/* --- ESPORAS FLOTANTES --- */
+.bug-spore {
+  position: absolute;
+  border-radius: 50%;
+  /* Color verde/amarillo pálido */
+  background-color: rgba(205, 220, 57, 0.6);
+  box-shadow: 0 0 4px rgba(139, 195, 74, 0.4);
+  animation: floatSpore linear infinite alternate;
+}
+
+/* --- ANIMACIONES --- */
+
+/* Hace que la telaraña se "dibuje" en la pantalla */
+@keyframes weaveWeb {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Un sutil balanceo de las telarañas */
+@keyframes swayWeb {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  100% {
+    transform: rotate(2deg) scale(1.02);
+  }
+}
+
+/* Flote aleatorio de las motas de polvo/esporas */
+@keyframes floatSpore {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translate(var(--tx), var(--ty)) scale(1.5);
+    opacity: 0.2;
+  }
+}
+
+/* DARK */
+
+.dark-effect-container {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  overflow: hidden;
+  background: radial-gradient(circle at center, #0a0a0c 0%, #000000 100%);
+}
+
+.dark-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border: 2px solid rgba(50, 50, 80, 0.3);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  animation: abyssPulse 10s infinite linear;
+}
+
+/* Generamos anillos de distintos tamaños */
+.dark-ring:nth-child(1) {
+  width: 20vw;
+  height: 20vw;
+  animation-delay: 0s;
+}
+.dark-ring:nth-child(2) {
+  width: 40vw;
+  height: 40vw;
+  animation-delay: -2s;
+}
+.dark-ring:nth-child(3) {
+  width: 60vw;
+  height: 60vw;
+  animation-delay: -4s;
+}
+.dark-ring:nth-child(4) {
+  width: 80vw;
+  height: 80vw;
+  animation-delay: -6s;
+}
+
+@keyframes abyssPulse {
+  0% {
+    transform: translate(-50%, -50%) scale(1) rotate(0deg);
+    opacity: 0.2;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.2) rotate(180deg);
+    opacity: 0.5;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1) rotate(360deg);
+    opacity: 0.2;
+  }
+}
+
+/* DRAGON */
+
+.dragon-effect-container {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  overflow: hidden;
+  background-color: #0f1219; /* Un tono base oscuro y frío */
+}
+
+.scales-pattern {
+  position: absolute;
+  inset: 0;
+  /* Creamos un patrón de rombos que simula la superposición de escamas */
+  background-image:
+    radial-gradient(
+      circle at 50% 50%,
+      rgba(255, 255, 255, 0.05) 0%,
+      transparent 40%
+    ),
+    linear-gradient(45deg, rgba(0, 0, 0, 0.2) 25%, transparent 25%),
+    linear-gradient(-45deg, rgba(0, 0, 0, 0.2) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, rgba(0, 0, 0, 0.2) 75%),
+    linear-gradient(-45deg, transparent 75%, rgba(0, 0, 0, 0.2) 75%);
+
+  /* Ajustamos el tamaño para que se vean como escamas pequeñas */
+  background-size: 40px 40px;
+  background-position:
+    0 0,
+    0 0,
+    0 0,
+    20px -20px,
+    20px -20px;
+
+  /* Suavizado para que no parezca una red de pesca */
+  mask-image: radial-gradient(circle, black, transparent 80%);
+
+  animation: scaleBreath 15s infinite ease-in-out;
+  opacity: 0.4;
+}
+
+@keyframes scaleBreath {
+  0% {
+    transform: scale(1);
+    opacity: 0.4;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.4;
+  }
+}
+
+.dragon-glow {
+  position: absolute;
+  top: 20%;
+  left: 20%;
+  width: 60%;
+  height: 60%;
+  background: radial-gradient(
+    circle,
+    rgba(100, 50, 200, 0.15),
+    transparent 70%
+  );
+  filter: blur(50px);
+  animation: glowPulse 8s infinite alternate;
+}
+
+@keyframes glowPulse {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.5);
+  }
+}
+
+/* NORMAL */
+
+.normal-effect-container {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  overflow: hidden;
+  /* Fondo gris oscuro, elegante y neutro */
+  background: radial-gradient(circle at center, #1a1a1a 0%, #0d0d0d 100%);
+}
+
+.mote {
+  position: absolute;
+  /* Blanco muy tenue para que se note pero no destaque más que el texto */
+  background-color: rgba(255, 255, 255, 0.15);
+  border-radius: 50%;
+  animation: floatMote linear infinite;
+}
+
+@keyframes floatMote {
+  0% {
+    transform: translateY(100vh) translateX(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.3;
+  }
+  90% {
+    opacity: 0.3;
+  }
+  100% {
+    transform: translateY(-10vh) translateX(20px);
+    opacity: 0;
+  }
+}
+
+/* FIRE */
+
+.fire-effect-container {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1; /* Al fondo, detrás de todo */
+  overflow: hidden;
+}
+
+/* Un gradiente tenue en la parte inferior para simular un fuego fuera de pantalla */
+.fire-glow-base {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 30vh;
+  background: radial-gradient(
+    ellipse at bottom,
+    rgba(255, 87, 34, 0.15) 0%,
+    transparent 70%
+  );
+}
+
+.ember-particle {
+  position: absolute;
+  bottom: -10px; /* Empiezan justo debajo del borde de la pantalla */
+  border-radius: 50%;
+
+  /* Color base de la brasa (naranja/rojo) */
+  background-color: #ff9800;
+
+  /* El resplandor (glow) usando múltiples sombras */
+  box-shadow:
+    0 0 10px 2px #ff5722,
+    0 0 20px 4px #f44336;
+
+  opacity: 0;
+  animation: floatEmber linear infinite;
+}
+
+/* Hacemos que algunas chispas sean más "calientes" (amarillas/blancas) */
+.ember-particle:nth-child(3n) {
+  background-color: #fff59d;
+  box-shadow:
+    0 0 8px 2px #ffeb3b,
+    0 0 15px 4px #ff9800;
+}
+
+.ember-particle:nth-child(5n) {
+  background-color: #ffcc80;
+  box-shadow:
+    0 0 12px 3px #ff7043,
+    0 0 25px 5px #e64a19;
+}
+
+/* La animación: Suben, se desvían de lado y se van apagando (achicando) */
+@keyframes floatEmber {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scale(1);
+  }
+  15% {
+    opacity: 1; /* Se encienden rápido */
+  }
+  80% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 0; /* Se apagan al llegar arriba */
+    /* Suben hasta arriba de la pantalla y se desvían lateralmente */
+    transform: translate(var(--drift), -110vh) scale(0.3);
+  }
+}
+
+/* WATER */
+
+.water-effect-container {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1; /* Al fondo, detrás de todo */
+  overflow: hidden;
+}
+
+/* Un tinte azulado muy sutil que viene desde arriba (la superficie) */
+.water-depth-tint {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(3, 169, 244, 0.15) 0%,
+    transparent 80%
+  );
+}
+
+.bubble {
+  position: absolute;
+  bottom: -50px; /* Nacen por debajo de la pantalla */
+  border-radius: 50%;
+
+  /* El borde cristalino de la burbuja */
+  border: 1px solid rgba(255, 255, 255, 0.3);
+
+  /* Sombra interna para dar volumen 3D */
+  box-shadow:
+    inset 0 0 10px rgba(255, 255, 255, 0.2),
+    inset 0 0 20px rgba(255, 255, 255, 0.1);
+
+  /* Relleno ligeramente celeste/blanco casi transparente */
+  background: radial-gradient(
+    circle at 30% 30%,
+    rgba(255, 255, 255, 0.1),
+    transparent 60%
+  );
+
+  opacity: 0;
+  animation: floatBubble linear infinite;
+}
+
+/* El reflejo de luz curvo típico de las burbujas */
+.bubble-reflection {
+  position: absolute;
+  top: 15%;
+  left: 15%;
+  width: 25%;
+  height: 25%;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.6);
+  filter: blur(1px); /* Suavizamos el brillo */
+  transform: rotate(-45deg);
+}
+
+/* Animación: Suben oscilando en el eje X */
+@keyframes floatBubble {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0.8);
+  }
+  10% {
+    opacity: 1; /* Se hacen visibles al empezar a subir */
+    transform: translate(calc(var(--wobble) / 2), -10vh) scale(1);
+  }
+  50% {
+    transform: translate(var(--wobble), -60vh) scale(1);
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0; /* Desaparecen al llegar a la superficie */
+    transform: translate(0, -120vh) scale(1.1); /* Se expanden un poquito al subir */
+  }
+}
+
+/* GRASS */
+
+.grass-effect-container {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1; /* Al fondo, detrás de la Pokédex */
+  overflow: hidden;
+}
+
+.leaf-wrapper {
+  position: absolute;
+  top: -10%; /* Empiezan por encima de la pantalla */
+  left: 0;
+  opacity: 0; /* Ocultas antes de empezar */
+
+  /* La animación usa las variables que pasamos desde React */
+  animation: leafStorm var(--duration) linear infinite;
+  animation-delay: var(--delay);
+}
+
+/* La forma de la hoja creada con puro CSS */
+.leaf-shape {
+  width: 30px;
+  height: 30px;
+  background: linear-gradient(
+    135deg,
+    #66bb6a 0%,
+    #388e3c 100%
+  ); /* Verde hoja */
+
+  /* ¡Aquí está la magia de la forma! */
+  border-radius: 0 70% 0 70%;
+
+  box-shadow:
+    inset 2px 2px 4px rgba(255, 255, 255, 0.2),
+    1px 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* Le damos variedad de colores a las hojas para que parezca un bosque natural */
+.leaf-wrapper:nth-child(3n) .leaf-shape {
+  background: linear-gradient(
+    135deg,
+    #81c784 0%,
+    #4caf50 100%
+  ); /* Verde más claro */
+}
+
+.leaf-wrapper:nth-child(5n) .leaf-shape {
+  background: linear-gradient(
+    135deg,
+    #9ccc65 0%,
+    #558b2f 100%
+  ); /* Verde amarillento */
+}
+
+/* Animación de la tormenta: Caen, se desplazan a la izquierda y giran sin control */
+@keyframes leafStorm {
+  0% {
+    opacity: 0;
+    transform: translate(var(--start-x), -10vh) scale(var(--scale))
+      rotate(var(--rot-start));
+  }
+  10% {
+    opacity: 1; /* Aparecen rápidamente */
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0; /* Se desvanecen justo antes de salir */
+    transform: translate(var(--end-x), 110vh) scale(var(--scale))
+      rotate(var(--rot-end));
+  }
+}
+
+/* ELECTRIC */
+
+.lightning-effect-container {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  overflow: hidden;
+}
+
+/* Contenedor individual para mantener el flash y el rayo juntos */
+.strike-wrapper {
+  position: absolute;
+  inset: 0;
+}
+
+/* El destello ahora suma luz según cuántos rayos haya */
+.lightning-flash {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(255, 255, 150, 0.08); /* Opacidad reducida */
+  animation: flicker 400ms linear forwards;
+}
+
+.lightning-bolt {
+  position: absolute;
+  top: 0;
+  width: 200px;
+  height: 100%;
+  animation: flicker 400ms linear forwards;
+}
+
+.bolt-main,
+.bolt-branch {
+  fill: none;
+  stroke: #fffbe6;
+  filter: drop-shadow(0 0 5px #ffeb3b) drop-shadow(0 0 15px #fbc02d)
+    drop-shadow(0 0 30px #f57f17);
+}
+
+.bolt-main {
+  stroke-width: 4px;
+}
+
+.bolt-branch {
+  stroke-width: 2px;
+}
+
+@keyframes flicker {
+  0% {
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  20% {
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  45% {
+    opacity: 0;
+  }
+  55% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* ICE */
+
+.ice-effect-container {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1; /* Al fondo, como siempre */
+  overflow: hidden;
+}
+
+/* Niebla helada que pulsa para simular ráfagas de viento blanco */
+.blizzard-fog {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom right,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(176, 224, 230, 0.15) 50%,
+    /* Azul hielo muy suave */ rgba(255, 255, 255, 0.25) 100%
+  );
+  animation: fogPulse 3s ease-in-out infinite alternate;
+}
+
+/* Cada copo de nieve */
+.snowflake {
+  position: absolute;
+  top: -5vh; /* Empiezan ligeramente por encima de la vista */
+  background-color: #ffffff;
+  border-radius: 50%;
+
+  /* Un ligero brillo para que no se vean como bordes duros */
+  box-shadow: 0 0 5px 2px rgba(255, 255, 255, 0.8);
+
+  animation: blizzardWind linear infinite;
+}
+
+/* Algunas partículas más borrosas para simular que están desenfocadas (muy cerca o muy lejos) */
+.snowflake:nth-child(4n) {
+  filter: blur(2px);
+}
+
+/* La animación: el viento los empuja drásticamente hacia la izquierda y abajo */
+@keyframes blizzardWind {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    /* Se mueven mucho hacia la izquierda (-80vw) mientras caen (110vh) */
+    transform: translate(-80vw, 110vh);
+  }
+}
+
+/* Las ráfagas de visibilidad de la niebla */
+@keyframes fogPulse {
+  0% {
+    opacity: 0.6;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* GROUND */
+
+.sandstorm-effect-container {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  overflow: hidden;
+  /* Eliminamos el fondo por completo para máxima claridad */
+  background-color: transparent;
+}
+
+.dust-clouds {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 200%;
+  height: 100%;
+  /* Bajamos la opacidad máxima a un mísero 0.08 (casi invisible) */
+  background: linear-gradient(
+    90deg,
+    rgba(194, 178, 128, 0) 0%,
+    rgba(194, 178, 128, 0.04) 25%,
+    rgba(166, 145, 92, 0.08) 50%,
+    rgba(194, 178, 128, 0.04) 75%,
+    rgba(194, 178, 128, 0) 100%
+  );
+  animation: blowingDust 3s linear infinite;
+}
+
+/* Cada grano de arena */
+.sand-grain {
+  position: absolute;
+  /* Color arena base (caqui) */
+  background-color: #c2b280;
+  border-radius: 50%;
+  box-shadow: 0 0 2px 1px rgba(139, 115, 85, 0.3);
+
+  animation: sandstormWind linear infinite;
+}
+
+/* Granos de tierra más oscuros para dar profundidad */
+.sand-grain:nth-child(3n) {
+  background-color: #8b7355;
+  box-shadow: none; /* Sin sombra para que parezcan enfocados */
+}
+
+/* Granos más claros/amarillentos */
+.sand-grain:nth-child(5n) {
+  background-color: #deb887;
+}
+
+/* El viento empuja la arena violentamente de derecha a izquierda */
+@keyframes sandstormWind {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    /* Atraviesa la pantalla en horizontal con una ligerísima caída en Y */
+    transform: translate(-120vw, 5vh);
+  }
+}
+
+/* Las cortinas de polvo moviéndose continuamente */
+@keyframes blowingDust {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    /* Movemos la mitad del div (que mide 200%) para un loop perfecto */
+    transform: translateX(-50%);
+  }
+}
+
+/* GHOST */
+
+.ghost-effect-container {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1; /* Al fondo */
+  overflow: hidden;
+}
+
+/* Tinte oscuro general para el ambiente fantasma */
+.ghost-darkness-base {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(20, 10, 30, 0.4);
+}
+
+/* Efecto de viñeta: bordes oscuros, centro más claro */
+.ghost-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at center,
+    transparent 30%,
+    rgba(0, 0, 0, 0.8) 100%
+  );
+  z-index: 2; /* Por encima de la niebla para enmarcarla */
+}
+
+/* Cada jirón de niebla */
+.ghost-wisp {
+  position: absolute;
+  border-radius: 50%;
+
+  /* Gradiente radial morado espectral */
+  background: radial-gradient(
+    circle,
+    rgba(103, 58, 183, 0.3) 0%,
+    rgba(63, 81, 181, 0.05) 50%,
+    transparent 70%
+  );
+
+  /* ESTO CREA LA NIEBLA: un desenfoque brutal destruye los bordes definidos */
+  filter: blur(40px);
+
+  /* Alternate hace que vayan y vuelvan fluidamente */
+  animation: driftFog ease-in-out infinite alternate;
+}
+
+/* Variedad de colores: algunos jirones más púrpura oscuro */
+.ghost-wisp:nth-child(even) {
+  background: radial-gradient(
+    circle,
+    rgba(156, 39, 176, 0.25) 0%,
+    rgba(33, 33, 33, 0.1) 50%,
+    transparent 70%
+  );
+}
+
+/* Otros más grises/azules siniestros */
+.ghost-wisp:nth-child(3n) {
+  background: radial-gradient(
+    circle,
+    rgba(96, 125, 139, 0.2) 0%,
+    rgba(0, 0, 0, 0.1) 50%,
+    transparent 70%
+  );
+}
+
+/* Animación: Flotan suavemente en direcciones aleatorias cambiando de escala y opacidad */
+@keyframes driftFog {
+  0% {
+    opacity: 0.3;
+    transform: translate(0, 0) scale(0.8);
+  }
+  50% {
+    opacity: 0.7; /* Se hacen más densos en el medio */
+    transform: translate(calc(var(--tx) / 2), calc(var(--ty) / 2)) scale(1.2);
+  }
+  100% {
+    opacity: 0.4;
+    transform: translate(var(--tx), var(--ty)) scale(0.9);
+  }
+}
+
+/* FAIRY */
+
+.fairy-effect-container {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  overflow: hidden;
+  /* Un fondo tenue que irradia desde las esquinas */
+  background: radial-gradient(
+    circle at top left,
+    rgba(255, 182, 193, 0.1) 0%,
+    transparent 70%
+  );
+}
+
+.fairy-particle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border-radius: 50%;
+  background: white;
+  /* Brillo mágico: rosa pastel y dorado */
+  box-shadow:
+    0 0 8px 2px #ffc0cb,
+    0 0 15px 4px #fffacd;
+  opacity: 0;
+  animation: fairyFly linear infinite;
+}
+
+@keyframes fairyFly {
+  0% {
+    opacity: 0;
+    transform: rotate(var(--angle)) translateY(0) scale(0);
+  }
+  10% {
+    opacity: 1;
+  }
+  50% {
+    /* El movimiento curvo */
+    transform: rotate(var(--angle)) translateY(-150px) scale(1);
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: rotate(var(--angle)) translateY(-300px) scale(0.5);
+  }
+}
+
+/* FLYING */
+
+.flying-effect-container {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  overflow: hidden;
+  /* Fondo mucho más oscuro y profesional para que el texto destaque */
+  background: linear-gradient(to bottom, #0b1529, #172b4d);
+}
+
+.cloud {
+  position: absolute;
+  /* Usaremos un SVG integrado para formas más realistas */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  width: 150px;
+  height: 100px;
+  opacity: 0.25; /* Muy sutil para que no moleste a la lectura */
+  animation: driftCloud linear infinite;
+}
+
+@keyframes driftCloud {
+  0% {
+    transform: translateX(-200px);
+  }
+  100% {
+    transform: translateX(100vw);
+  }
+}
+
+/* FIGHTING */
+
+.impact-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999; /* Asegurar que esté sobre TODO en el body */
+}
+
+.impact-overlay.active {
+  animation: impactFlash 250ms ease-out forwards; /* 'forwards' para asegurar el desvanecimiento */
+}
+
+@keyframes impactFlash {
+  0% {
+    background: rgba(255, 255, 255, 0);
+  }
+
+  /* ¡EL CAMBIO CLAVE! Alcanzamos el pico de inmediato (5%) y es blanco SÓLIDO (opacidad 1) */
+  5% {
+    background: rgba(255, 255, 255, 1); /* O simplemente 'background: white;' */
+  }
+
+  100% {
+    background: rgba(255, 255, 255, 0);
+  }
+}
+
+/* Esta clase ahora se aplicará al body o al contenedor principal */
+.shake {
+  animation: fightingShake 250ms cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@keyframes fightingShake {
+  0% {
+    transform: translate(0);
+  }
+  10% {
+    transform: translate(-6px, 2px);
+  }
+  20% {
+    transform: translate(6px, -2px);
+  }
+  30% {
+    transform: translate(-8px, 0);
+  }
+  40% {
+    transform: translate(8px, 2px);
+  }
+  50% {
+    transform: translate(-5px, -2px);
+  }
+  60% {
+    transform: translate(5px, 0);
+  }
+  70% {
+    transform: translate(-3px, 1px);
+  }
+  80% {
+    transform: translate(3px, -1px);
+  }
+  100% {
+    transform: translate(0);
+  }
+}
+
+.fighting-ring {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  /* Lo hacemos un poco más grueso para que se note el golpe */
+  border: 6px solid rgba(255, 255, 255, 0.8);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5); /* Le da un toque brillante */
+}
+
+.fighting-ring.active {
+  animation: shockwave 250ms ease-out forwards;
+}
+
+@keyframes shockwave {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(0.2); /* Inicia más pequeño */
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(3.5); /* Explota hacia afuera */
+  }
+}
+
+/* STEEL */
+
+.steel-effect-container {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+/* Este es el cuchillazo */
+.steel-slash {
+  position: absolute;
+  width: 200vw; /* Aseguramos que sea más ancho que la pantalla */
+  height: 6px; /* Un poco más grueso para que se vea bien */
+  background: linear-gradient(90deg, transparent, white, transparent);
+
+  /* Centrado relativo al contenedor */
+  top: 50%;
+  left: -50%;
+
+  transform-origin: center;
+  transform: rotate(45deg);
+
+  animation: slashEffect 800ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+@keyframes slashEffect {
+  0% {
+    opacity: 0;
+    transform: rotate(45deg) translateX(-100%);
+  }
+  20% {
+    opacity: 1;
+    box-shadow: 0 0 20px 5px rgba(255, 255, 255, 0.8);
+  }
+  100% {
+    opacity: 0;
+    transform: rotate(45deg) translateX(100%);
+  }
+}
+
+/* POISON */
+
+.poison-effect-container {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  overflow: hidden;
+}
+
+.poison-bubble {
+  position: absolute;
+  bottom: -50px;
+  border-radius: 50%;
+  /* Color veneno: verde ácido y morado */
+  background: radial-gradient(circle at 30% 30%, #b2ff59, #6a1b9a);
+  opacity: 0.3; /* Transparente para no molestar */
+  filter: blur(2px);
+  animation: risePoison linear infinite;
+}
+
+@keyframes risePoison {
+  0% {
+    transform: translateY(0) scale(0.5);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.4;
+  }
+  100% {
+    transform: translateY(-110vh) scale(1.5);
+    opacity: 0;
+  }
+}
+
+/* PSYCHIC */
+
+.psychic-effect-container {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  overflow: hidden;
+  /* Un fondo cósmico muy oscuro con un toque de púrpura */
+  background: radial-gradient(
+    circle at center,
+    rgba(75, 0, 130, 0.15) 0%,
+    transparent 80%
+  );
+}
+
+/* --- ONDAS MENTALES HIPNÓTICAS --- */
+.mind-wave {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border: 2px solid rgba(238, 130, 238, 0.4); /* Violeta claro */
+  box-shadow:
+    0 0 20px rgba(138, 43, 226, 0.3),
+    /* Resplandor púrpura exterior */ inset 0 0 20px rgba(138, 43, 226, 0.3); /* Resplandor interior */
+  animation: expandWave 6s cubic-bezier(0.1, 0.8, 0.3, 1) infinite;
+}
+
+/* Desfasamos las ondas para que salgan una detrás de otra */
+.wave-1 {
+  animation-delay: 0s;
+}
+.wave-2 {
+  animation-delay: -2s;
+}
+.wave-3 {
+  animation-delay: -4s;
+}
+
+@keyframes expandWave {
+  0% {
+    width: 0;
+    height: 0;
+    opacity: 1;
+  }
+  100% {
+    width: 150vw; /* Se expanden más allá de la pantalla */
+    height: 150vw;
+    opacity: 0;
+  }
+}
+
+/* --- FORMAS GEOMÉTRICAS TELEQUINÉTICAS --- */
+.psychic-shape {
+  position: absolute;
+  /* Bordes brillantes color magenta/rosa fuerte */
+  border: 2px solid rgba(255, 105, 180, 0.6);
+  box-shadow: 0 0 12px rgba(255, 105, 180, 0.4);
+  /* Un relleno casi transparente */
+  background-color: rgba(238, 130, 238, 0.05);
+
+  /* Efecto cristal: difumina ligeramente lo que pasa por detrás de la forma */
+  backdrop-filter: blur(2px);
+
+  animation: telekinesis linear infinite;
+}
+
+.psychic-shape.circle {
+  border-radius: 50%;
+}
+
+.psychic-shape.square {
+  border-radius: 4px; /* Cuadrados con bordes levísimamente suaves */
+}
+
+/* Animación: Flotan suavemente arriba/abajo mientras rotan sobre sí mismas */
+@keyframes telekinesis {
+  0% {
+    transform: translateY(0) rotate(0deg);
+  }
+  33% {
+    /* Suben lentamente */
+    transform: translateY(calc(var(--float-offset) * -1))
+      rotate(calc(120deg * var(--rot-dir)));
+  }
+  66% {
+    /* Bajan lentamente pasando su punto original */
+    transform: translateY(var(--float-offset))
+      rotate(calc(240deg * var(--rot-dir)));
+  }
+  100% {
+    /* Vuelven al centro */
+    transform: translateY(0) rotate(calc(360deg * var(--rot-dir)));
+  }
+}
+
+/* ROCK */
+
+.rock-effect-container {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  overflow: hidden;
+}
+
+/* --- ANIMACIÓN DE LA GRIETA --- */
+.crack-line {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  stroke: rgba(255, 255, 255, 0.6);
+  stroke-width: 2px;
+  fill: none;
+  filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.2));
+}
+
+.crack-line path {
+  /* Truco para animar el dibujado del SVG */
+  stroke-dasharray: 400;
+  stroke-dashoffset: 400;
+  /* La grieta se forma muy rápido (0.3s) */
+  animation: drawCrack 0.3s ease-out forwards;
+}
+
+@keyframes drawCrack {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* --- ANIMACIÓN DE LOS ESCOMBROS --- */
+.rock-debris {
+  position: absolute;
+  background-color: #5c554e; /* Color roca por defecto */
+  opacity: 0;
+  /* ease-out hace que salgan rápido y se ralenticen cayendo */
+  animation: rockExplode 1.2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+/* Le damos variedad de colores a las rocas para generar profundidad */
+.rock-debris:nth-child(even) {
+  background-color: #4a443e;
+}
+.rock-debris:nth-child(3n) {
+  background-color: #7a7268;
+}
+
+@keyframes rockExplode {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0.2) rotate(0deg);
+  }
+  10% {
+    opacity: 1; /* Aparecen bruscamente cuando la grieta se abre */
+  }
+  100% {
+    opacity: 0; /* Se desvanecen al final de su caída */
+    /* Vuelan hacia las coordenadas generadas aleatoriamente en React */
+    transform: translate(var(--tx), var(--ty)) scale(1.5) rotate(var(--rot));
+  }
+}
+
+/* OTROS TIPOS */
+
+.particle-default {
+  position: absolute;
+
+  border-radius: 50%;
+
+  background: var(--particle-color);
+
+  box-shadow:
+    0 0 8px var(--particle-color),
+    0 0 16px var(--particle-color);
+
+  opacity: 0;
+
+  animation: floatParticle ease-in-out infinite;
+}
+
+@keyframes floatParticle {
+  0% {
+    transform: translateY(0) translateX(0) scale(0.5);
+    opacity: 0;
+  }
+
+  20% {
+    opacity: 0.4;
+  }
+
+  50% {
+    transform: translateY(-30px) translateX(15px) scale(1);
+    opacity: 0.8;
+  }
+
+  100% {
+    transform: translateY(-80px) translateX(-15px) scale(0.5);
+    opacity: 0;
+  }
+}
