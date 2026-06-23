@@ -1,13 +1,18 @@
 import { useEffect, useState, Fragment } from "react";
 import { useParams } from "react-router-dom";
-import { FaHeart } from "react-icons/fa";
-import { FaChevronLeft } from "react-icons/fa";
-import { FaChevronRight } from "react-icons/fa";
+import {
+  FaHeart,
+  FaRegHeart,
+  FaChevronLeft,
+  FaChevronRight,
+} from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { capitalize } from "./Utils.jsx";
 import { PokemonBackgroundEffect } from "./components/PokemonBackgroundEffect.jsx";
 import { EvolutionTree } from "./components/EvolutionTree.jsx";
 import ReactCompareImage from "react-compare-image";
+import { Footer } from "./components/Footer.jsx";
+import { isFavorite, toggleFavorite } from "./utils/favorites";
 import "./css/App.css";
 
 const API_URL = "https://pokeapi.co/api/v2";
@@ -18,6 +23,9 @@ export function PokemonPage() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [tab, setTab] = useState("info");
   const [pokemon, setPokemon] = useState(null);
+  const [favorite, setFavorite] = useState(false);
+  const [showFavoriteMessage, setShowFavoriteMessage] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
   const [evolution, setEvolution] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -60,6 +68,26 @@ export function PokemonPage() {
     setZoomImage(imageUrl);
   };
 
+  const handleFavorite = () => {
+    const newState = toggleFavorite(id);
+
+    setFavorite(newState);
+
+    setToastMessage(
+      newState ? "❤️ Agregado a favoritos" : "💔 Eliminado de favoritos",
+    );
+
+    setShowFavoriteMessage(true);
+
+    setTimeout(() => {
+      setShowFavoriteMessage(false);
+    }, 2000);
+  };
+
+  useEffect(() => {
+    setFavorite(isFavorite(id));
+  }, [id]);
+
   useEffect(() => {
     const loadPokemon = async () => {
       try {
@@ -67,6 +95,11 @@ export function PokemonPage() {
 
         // Pokémon principal
         const pokemonResponse = await fetch(`${API_URL}/pokemon/${id}`);
+
+        if (!pokemonResponse.ok) {
+          throw new Error("Ficha no disponible");
+        }
+
         const pokemonData = await pokemonResponse.json();
 
         setPokemon(pokemonData);
@@ -174,7 +207,38 @@ export function PokemonPage() {
     );
 
   // ERROR
-  if (error) return <p>Error: {error}</p>;
+  if (error) {
+    return (
+      <main className="pokemon-not-found">
+        <header className="header">
+          <button className="btn" onClick={() => navigate("/")}>
+            <FaChevronLeft className="icon" />
+          </button>
+
+          <h1 style={{ margin: "auto" }}>Error</h1>
+
+          <button className="btn">
+            <FaHeart className="icon" />
+          </button>
+        </header>
+
+        <section
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <h1>📖 Ficha no disponible</h1>
+
+          <p>
+            El Pokémon #{id} no existe en PokéAPI o todavía no fue agregado.
+          </p>
+        </section>
+      </main>
+    );
+  }
 
   // SIN DATOS
   if (!pokemon) return null;
@@ -190,7 +254,10 @@ export function PokemonPage() {
 
         <h1 style={{ margin: "auto" }}>#{pokemon.id}</h1>
 
-        <button className="btn">
+        <button
+          onClick={handleFavorite}
+          className={favorite ? "favorite-btn-selected" : "favorite-btn"}
+        >
           <FaHeart className="icon" />
         </button>
       </header>
@@ -266,7 +333,11 @@ export function PokemonPage() {
             />
           </div>
 
-          <button className="btn-small" onClick={() => changePokemon(1)}>
+          <button
+            className="btn-small"
+            disabled={Number(id) >= 1025}
+            onClick={() => changePokemon(1)}
+          >
             <FaChevronRight className="icon-small" />
           </button>
         </div>
@@ -529,6 +600,14 @@ export function PokemonPage() {
           })}
         </section>
       )}
+
+      {/* MENSAJE FAVORITO */}
+      {showFavoriteMessage && (
+        <div className="favorite-toast">{toastMessage}</div>
+      )}
+
+      {/* FOOTER */}
+      <Footer></Footer>
     </main>
   );
 }

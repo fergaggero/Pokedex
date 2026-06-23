@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { PokedexButton } from "./PokedexButton";
 import { PokemonCard } from "./PokemonCard";
 import { SearchBar } from "./components/SearchBar";
+import { Footer } from "./components/Footer.jsx";
 
 import "./css/App.css";
 
@@ -201,6 +202,8 @@ export function Home() {
           </li>
         ))}
       </ul>
+
+      <Footer></Footer>
     </main>
   );
 }
