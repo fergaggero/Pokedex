@@ -5,6 +5,7 @@ import { PokedexButton } from "./components/PokedexButton.jsx";
 import { PokemonCard } from "./components/PokemonCard";
 import { SearchBar } from "./components/SearchBar";
 import { Footer } from "./components/Footer.jsx";
+import pokedexLogo from "./assets/pokedex.webp";
 
 import "./css/App.css";
 
@@ -177,7 +178,7 @@ export function Home() {
           }}
         >
           <img
-            src="../src/assets/pokedex.webp"
+            src={pokedexLogo}
             alt="Pokedex"
             style={{
               width: "40px",
