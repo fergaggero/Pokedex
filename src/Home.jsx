@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-import { PokedexButton } from "./PokedexButton";
-import { PokemonCard } from "./PokemonCard";
+import { PokedexButton } from "./components/PokedexButton.jsx";
+import { PokemonCard } from "./components/PokemonCard";
 import { SearchBar } from "./components/SearchBar";
 import { Footer } from "./components/Footer.jsx";
 
@@ -15,6 +15,8 @@ export function Home() {
   const [allPokemons, setAllPokemons] = useState([]);
   const [pokemonList, setPokemonList] = useState([]);
   const [selectedPokedexId, setSelectedPokedexId] = useState(null);
+  const [opened, setOpened] = useState(false);
+  const [hideIntro, setHideIntro] = useState(false);
 
   const [currentGenerationUrl, setCurrentGenerationUrl] = useState(
     "https://pokeapi.co/api/v2/generation/1/",
@@ -44,6 +46,21 @@ export function Home() {
     return url.match(/\/(\d+)\/$/)?.[1];
   };
 
+  useEffect(() => {
+    const openTimer = setTimeout(() => {
+      setOpened(true);
+    }, 500);
+
+    const hideTimer = setTimeout(() => {
+      setHideIntro(true);
+    }, 2300);
+
+    return () => {
+      clearTimeout(openTimer);
+      clearTimeout(hideTimer);
+    };
+  }, []);
+
   // Cargar generaciones
   useEffect(() => {
     const loadGenerations = async () => {
@@ -62,31 +79,36 @@ export function Home() {
 
   // Cargar todos los Pokémon para búsqueda
   useEffect(() => {
-    const loadAllPokemonNames = async () => {
+    const initPokedex = async () => {
+      setLoading(true);
       try {
-        const response = await fetch(`${API_URL}/pokemon?limit=2000`);
-        const data = await response.json();
+        // 1. Cargamos generaciones y Kanto en paralelo
+        const [genRes, kantoRes] = await Promise.all([
+          fetch(`${API_URL}/generation`),
+          fetch(`${API_URL}/generation/1/`),
+        ]);
 
-        const pokemons = data.results.map((pokemon) => ({
-          id: pokemon.url.match(/\/(\d+)\/$/)?.[1],
-          name: pokemon.name,
-        }));
+        const genData = await genRes.json();
+        const kantoData = await kantoRes.json();
 
-        setAllPokemons(pokemons);
+        setGenerationList(genData.results);
+        setSelectedPokedexId("1");
+
+        // 2. Procesamos Kanto inmediatamente
+        const pokemons = kantoData.pokemon_species
+          .map((p) => ({ id: p.url.match(/\/(\d+)\/$/)?.[1], name: p.name }))
+          .sort((a, b) => Number(a.id) - Number(b.id));
+
+        setPokemonList(pokemons);
       } catch (err) {
         setError(err.message);
+      } finally {
+        setLoading(false);
       }
     };
 
-    loadAllPokemonNames();
+    initPokedex();
   }, []);
-
-  // Mostrar Kanto al iniciar
-  useEffect(() => {
-    if (generationList.length > 0 && !selectedPokedexId) {
-      handleGenerationClick("1", "https://pokeapi.co/api/v2/generation/1/");
-    }
-  }, [generationList]);
 
   const handleGenerationClick = async (generationId, url) => {
     try {
@@ -131,79 +153,103 @@ export function Home() {
   };
 
   return (
-    <main>
-      <h1
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: "10px",
-          padding: "0px 20px",
-        }}
-      >
-        <img
-          src="../src/assets/pokedex.webp"
-          alt="Pokedex"
-          style={{
-            width: "40px",
-            height: "auto",
-          }}
-        />
+    <>
+      {!hideIntro && (
+        <div className={`pokedex-intro ${opened ? "open" : ""}`}>
+          <div className="top-half" />
 
-        <span
+          <div className="center-line" />
+
+          <div className="center-button" />
+
+          <div className="bottom-half" />
+        </div>
+      )}
+
+      <main className={`home-content ${opened ? "visible" : ""}`}>
+        <h1
           style={{
-            fontFamily: "pokemon",
+            display: "flex",
+            alignItems: "center",
+            gap: "10px",
+            padding: "0px 20px",
+            background: "#222222",
           }}
         >
-          POKEDEX
-        </span>
+          <img
+            src="../src/assets/pokedex.webp"
+            alt="Pokedex"
+            style={{
+              width: "40px",
+              height: "auto",
+            }}
+          />
 
-        <SearchBar onSearch={handleSearch} />
-      </h1>
+          <span
+            style={{
+              fontFamily: "pokemon",
+            }}
+          >
+            POKEDEX
+          </span>
 
-      {error && <p>Error: {error}</p>}
+          <SearchBar onSearch={handleSearch} />
+        </h1>
 
-      <section className="grid" style={{ padding: "10px 10px" }}>
-        {generationList.map((generation, index) => {
-          const generationId = getGenerationId(generation.url);
+        {error && <p>Error: {error}</p>}
 
-          const image = pokedexImages[`./assets/pokedexes/${generationId}.png`];
+        <section
+          className="grid"
+          style={{ padding: "10px 10px", background: "#222222" }}
+        >
+          {generationList.map((generation, index) => {
+            const generationId = getGenerationId(generation.url);
 
-          return (
-            <PokedexButton
-              key={generationId}
-              name={regionsList[index]}
-              image={image}
-              generationId={generationId}
-              selected={selectedPokedexId === generationId}
-              onSelect={() =>
-                handleGenerationClick(generationId, generation.url)
-              }
-            />
-          );
-        })}
-      </section>
+            const image =
+              pokedexImages[`./assets/pokedexes/${generationId}.png`];
 
-      {loading && <p>Cargando...</p>}
+            return (
+              <PokedexButton
+                key={generationId}
+                name={regionsList[index]}
+                image={image}
+                generationId={generationId}
+                selected={selectedPokedexId === generationId}
+                onSelect={() =>
+                  handleGenerationClick(generationId, generation.url)
+                }
+              />
+            );
+          })}
+        </section>
 
-      <ul
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(150px, 1fr))",
-          gap: "1rem",
-          listStyle: "none",
-          padding: 0,
-        }}
-      >
-        {pokemonList.map((pokemon) => (
-          <li key={pokemon.id} className="pokemon-item">
-            <Link to={`/pokemon/${pokemon.id}`} className="pokemon-link-item">
-              <PokemonCard id={pokemon.id} name={pokemon.name} />
-            </Link>
-          </li>
-        ))}
-      </ul>
+        {loading && <p>Cargando...</p>}
 
-      <Footer></Footer>
-    </main>
+        <section className="pokedex-screen-frame">
+          <ul
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(150px, 1fr))",
+              gap: "1rem",
+              listStyle: "none",
+              padding: 0,
+            }}
+          >
+            {pokemonList.map((pokemon) => (
+              <li key={pokemon.id} className="pokemon-item">
+                <Link
+                  to={`/pokemon/${pokemon.id}`}
+                  className="pokemon-link-item"
+                >
+                  <PokemonCard id={pokemon.id} name={pokemon.name} />
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <Footer></Footer>
+      </main>
+    </>
   );
 }

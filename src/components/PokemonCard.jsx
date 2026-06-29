@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { FaHeart } from "react-icons/fa";
-import { isFavorite } from "./utils/favorites";
+import { isFavorite } from "../utils/favorites";
 
 export function PokemonCard({ id, name, onSelect }) {
   const [favorite, setFavorite] = useState(false);
